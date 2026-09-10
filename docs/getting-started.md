@@ -21,8 +21,8 @@ in one script once you have finished step 5 here.
 ## 1. Clone and install
 
 ```bash
-git clone https://github.com/OpenNGSOrg/OpenNGS.git
-cd OpenNGS
+git clone https://github.com/OpenNGSOrg/openngs-core.git
+cd openngs-core
 make install
 ```
 

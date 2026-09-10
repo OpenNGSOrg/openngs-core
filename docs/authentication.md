@@ -164,12 +164,12 @@ Authentication guards **the HTTP interfaces**. It is not a boundary around your 
   will not validate credentials against a directory. That belongs to a gateway, a proxy, or
   your SSO. What is planned is a contract for accepting the principal such a gateway
   establishes, so it reaches `recorded_by`
-  ([#27](https://github.com/OpenNGSOrg/OpenNGS/issues/27)); the internal `Principal` type is
+  ([#27](https://github.com/OpenNGSOrg/openngs-core/issues/27)); the internal `Principal` type is
   the seam. **A deployment carrying PHI must run a gateway in front of OpenNGS.** The static
   tokens here are for machines — a pipeline hook, the relay, an Airflow task — not people.
 - **Reads are not audited.** Every write records `recorded_by`; no read records anything.
   "Who looked at this patient's record" is not a question this release can answer
-  ([#28](https://github.com/OpenNGSOrg/OpenNGS/issues/28)).
+  ([#28](https://github.com/OpenNGSOrg/openngs-core/issues/28)).
 
 ## Deployment patterns
 
@@ -198,7 +198,7 @@ since they grant strictly more (see above).
 **Dashboards and analysis.** Give the BI tool a read-only token, not a write one. If it
 queries the database directly rather than through the API, give it a read-only database
 role instead; that is tracked as
-[#22](https://github.com/OpenNGSOrg/OpenNGS/issues/22).
+[#22](https://github.com/OpenNGSOrg/openngs-core/issues/22).
 
 ## Troubleshooting
 

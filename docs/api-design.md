@@ -416,7 +416,7 @@ empty result: a consumer receiving nothing cannot otherwise distinguish "nothing
 from "I asked wrongly". The same applies to an unknown `?after=`.
 
 This is polling, not push. A webhook or broker sink is
-[#12](https://github.com/OpenNGSOrg/OpenNGS/issues/12); a cursor is the minimum that makes
+[#12](https://github.com/OpenNGSOrg/openngs-core/issues/12); a cursor is the minimum that makes
 polling correct in the meantime.
 
 `GET /events` lists oldest first. `POST /events/replay` truncates every graph table and
