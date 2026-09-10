@@ -108,18 +108,87 @@ Then `make api` for the REST and GraphQL APIs at `http://localhost:8000` (Swagge
 `/docs`, GraphiQL at `/graphql`), or `make compose-up` for Postgres, the API, and the MCP
 server together in containers.
 
-## Status
+## Ways in
 
-This is the first release. The entity and edge set is closed and stable; changing it is a
-major version of the standard. Facets, not schema changes, are where variation goes.
+There are five ways to talk to an OpenNGS graph. They are not five implementations — each
+is a thin client of one store layer, and **every write goes through the same path**: the
+event is appended first, then applied to the graph in the same transaction. Whichever door
+a fact arrives through, the projection stays rebuildable from the log.
 
-Corrections are supported: a record can be corrected or retracted, always as a new
-superseding event with a stated reason, never as an edit or a delete.
+| Interface | Start it with | Best for |
+|---|---|---|
+| **CLI** | `make cli-install`, then `openngs` | People at a terminal, and scripts on the same machine as the database |
+| **REST API** | `make api` | Adapters, orchestrators, anything over HTTP |
+| **GraphQL** | `make api`, then `/graphql` | Traversal — following lineage across many hops in one query |
+| **MCP server** | `make mcp` | AI agents |
+| **Manifest loader** | `openngs ingest manifest` | Bulk loading a sample sheet a lab already keeps |
 
-Known limits: no ingest adapters ship yet, the HTTP interfaces authenticate static bearer
-tokens only (not an identity provider), and querying the graph as it was believed at a past
-moment is not yet possible. See
-[docs/architecture.md](docs/architecture.md#8-known-limits-of-this-release).
+### CLI
+
+Connects straight to the database. The full surface: create, list, show, correct and
+retract for every entity type, plus `link`, `facet`, `datapoint`, `event` and
+`ingest manifest`.
+
+```bash
+openngs specimen create SPEC-001 --subject SUBJ-001 --xref barcode:TUBE-00417
+openngs link used --from EXT-001 --to KIT-LOT-A1
+openngs specimen show SPEC-001 --events
+```
+
+Because it bypasses the HTTP layer, it also bypasses authentication — see the note at the
+top of this page. Reference: [docs/cli-design.md](docs/cli-design.md).
+
+### REST API
+
+The CLI's surface over HTTP, with OpenAPI at `/docs`.
+
+```bash
+curl -X POST localhost:8000/specimens \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"local_id": "SPEC-001", "subject": "SUBJ-001"}'
+```
+
+`POST /batch` applies several operations in one transaction, which is what an orchestrator
+wants when registering a run and its outputs together. Reference:
+[docs/api-design.md](docs/api-design.md).
+
+### GraphQL
+
+Mounted by the same process at `/graphql`, with GraphiQL in a browser. **Query-only** —
+there are no mutations, because writes belong on the paths above. It exists because
+"follow `derived_from` from this VCF back to the subject" is one GraphQL query and several
+REST round trips.
+
+```graphql
+{ dataFile(ref: "0042-P.vcf.gz") { name outgoing { predicate other { name } } } }
+```
+
+Reference: [docs/graphql-design.md](docs/graphql-design.md).
+
+### MCP server
+
+One MCP tool per REST route, derived automatically from the API's own OpenAPI schema, plus
+a hand-written `execute_graphql`. It is a protocol adapter in front of the REST API, not
+another client of the store. Reference: [docs/mcp-design.md](docs/mcp-design.md).
+
+### Manifests
+
+A CSV or TSV with one row per entity, edge, datapoint, facet or schema, applied in file
+order inside a single transaction — so a bad row anywhere leaves nothing behind.
+
+```bash
+openngs ingest manifest run-2026-09-01.tsv --dry-run
+openngs ingest manifest run-2026-09-01.tsv
+```
+
+Available over HTTP too, as `POST /ingest/manifest`. Reference:
+[docs/manifest.md](docs/manifest.md).
+
+### Reading the other way
+
+Consumers do not have to poll. `openngs event relay` follows the event log and pushes each
+event to a webhook as a CloudEvents envelope, at least once, with the event id as the
+deduplication key. Reference: [docs/event-delivery.md](docs/event-delivery.md).
 
 ## Layout
 
