@@ -1,5 +1,5 @@
-"""End-to-end tests for the REST API's `datapoint` routes (Phase 3 backlog item 4,
-docs/api-design.md). Mirrors the relevant scenarios in tests/test_cli_datapoints.py."""
+"""End-to-end tests for the REST API's `datapoint` routes (docs/api-design.md).
+Mirrors the relevant scenarios in tests/test_cli_datapoints.py."""
 
 from __future__ import annotations
 

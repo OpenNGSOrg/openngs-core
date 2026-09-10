@@ -3,91 +3,91 @@
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Subject Description: The source a specimen was taken from: a person, an organism, or an environmental sampling site (a lake, a river station, a soil plot). The root of every physical chain - what lets specimens taken from the same source, at different times, be recognized as such, and what a cohort, a pedigree, or a per-site time series groups.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Specimen Description: Material as collected, before any lab processing. An aliquot taken from a Specimen is itself a Specimen, linked to its parent via a derived_from edge — aliquoting is a relationship, not a distinct entity type.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Extract Description: Nucleic acid extracted from a Specimen. A split or re-aliquoted portion of an Extract is itself an Extract, linked to its parent via derived_from.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Library Description: A sequencing-ready library prepared from an Extract. A split portion of a Library is itself a Library, linked to its parent via derived_from.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Pool Description: Multiple Libraries combined for a shared sequencing run. A re-pooled or split portion of a Pool is itself a Pool, linked to its parent via derived_from.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: SequencingRun Description: One execution of a sequencing instrument.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: DataFile Description: A reference to a data payload (FASTQ, BAM, VCF, ...). OpenNGS is a metadata plane, not a data plane: it never stores the payload itself, only references to it.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: AnalysisRun Description: One execution of an analysis pipeline or tool.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: DataFileSet Description: A named group of DataFiles produced together by one SequencingRun or AnalysisRun - a raw BCL run folder, or the result files of one pipeline execution. Member DataFiles join via part_of; the set itself is linked to the run that made it via produced_by, the same predicate an individual DataFile uses. A DataFileSet may itself be part_of another DataFileSet, e.g. a per-sample FASTQ subset nested inside a multi-sample demultiplexing run's overall output set.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Protocol Description: A documented procedure used by a process.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Reagent Description: A kit lot, not a kit type. Lot-level granularity is intentional: it is what makes the QC-by-kit-lot forensics query possible.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Actor Description: A human or an instrument that performed or operated a process.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Project Description: An administrative grouping of specimens, runs, and analyses.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: Context Description: A generic scientific or analytical grouping that gives meaning to a set of entities considered together, e.g. a cohort of Subjects, a cohort of Specimens, or a pedigree linking the Subjects in a familial genetic test. Distinct from Project, which is an administrative grouping (funding, ownership) rather than a scientific one; the two commonly cut across each other and both may apply to the same entity. Any entity type may join a Context via part_of; what role it plays in that context (e.g. proband, affected, control) is not a field on the entity or the edge but a facet attached to the part_of edge, so it stays open-ended without growing this closed entity/edge set.
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: DataPoint Description: An atomic, independently-correctable measurement or fact - a QC metric worth cross-cutting queries, a business-logic value, or a fact pulled from a third-party system. Formal, vendor-versioned, multi-field tool output (FastQC, DRAGEN, ...) belongs in a Facet instead, kept whole; a DataPoint is for the specific fields worth querying across the graph on their own, or facts that never came from a tool report at all.
 --     * Slot: datapoint_type Description: What was measured, as a CURIE. Prefer a term from schema/vocabularies/datapoints.yaml (e.g. openngs-dp:percent_duplication) where one exists; fall back to a vendor or institution CURIE otherwise (e.g. acme-lims:sample-priority). Not a closed enum: the datapoint vocabulary is additive, and most business-logic datapoints will never belong to it at all.
@@ -98,7 +98,7 @@
 --     * Slot: internal_id Description: Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.
 --     * Slot: name Description: Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Abstract Class: Edge Description: A lineage relationship or identity assertion between two entities. Edges are first-class objects, not slots on Entity, because facets can attach to an edge and same_as needs its own evidentiary fields.
 --     * Slot: edge_id Description: Opaque, immutable UUIDv7.
@@ -106,7 +106,7 @@
 --     * Slot: predicate
 --     * Slot: object Description: internal_id of the Entity this edge points to.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Class: SameAsEdge Description: An identity assertion, never a merge: same_as never collapses two nodes into one. Deduplication is resolved at query time via same_as closure at a caller-supplied confidence threshold.
 --     * Slot: asserted_by Description: internal_id of the Actor making this identity assertion.
@@ -118,7 +118,7 @@
 --     * Slot: predicate
 --     * Slot: object Description: internal_id of the Entity this edge points to.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 -- # Abstract Class: Facet Description: A named, versioned, independently-schema'd metadata object attached to an entity or edge. _producer and _schemaURL are mandatory on every facet so an unknown consumer can tell what wrote it and validate it without prior knowledge.
 --     * Slot: id
@@ -139,12 +139,12 @@
 --     * Slot: supersedes Description: event_id of a prior event this one corrects (invariant 1). Not yet populated by anything the CLI does - the column exists so this schema doesn't need to change when corrections are designed.
 --     * Slot: supersede_reason Description: Why the correction was made. Required alongside supersedes: a correction with no stated reason is not worth more than the wrong fact it replaces.
 --     * Slot: payload Description: The type-specific content (CloudEvents `data`, minus the bitemporal/supersedes fields already promoted to real columns above), as a JSON string - the same portable TEXT-column pattern already used for FacetInstance.data/FacetSchema.json_schema.
--- # Class: FacetInstance Description: A facet instance of a type not (yet, or ever) promoted to core. `data` is validated at write time against the JSON Schema `_schemaURL` points to - a local file for now fetching a remote URL isn't supported yet.
+-- # Class: FacetInstance Description: A facet instance of a type not (yet, or ever) promoted to core. `data` is validated at write time against the JSON Schema `_schemaURL` points to - a local file for now; fetching a remote URL isn't supported yet.
 --     * Slot: facet_id Description: Opaque, immutable UUIDv7, same shape as internal_id/edge_id.
 --     * Slot: facet_type Description: The class name within the schema at _schemaURL this instance conforms to - a schema file can define more than one class.
 --     * Slot: data Description: This instance's fields, serialized as a JSON string. A plain string column, not a native json/jsonb type, so the same DDL is portable between SQLite and Postgres.
 --     * Slot: valid_time Description: When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
---     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
+--     * Slot: retracted_at Description: Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.
 --     * Slot: retracted_by_event Description: event_id of the retraction event that set retracted_at.
 --     * Slot: attached_to Description: internal_id of the Entity, or edge_id of the Edge, this facet describes.
 --     * Slot: _producer Description: Identifies what produced this facet, e.g. a tool name and version, or a system name.

@@ -1,6 +1,6 @@
-"""End-to-end tests for the REST API's entity CRUD routes (Phase 3 backlog item 1,
-docs/api-design.md). Mirrors tests/test_cli_entities.py's scenarios against the same store
-layer, exercised over HTTP instead of the CLI."""
+"""End-to-end tests for the REST API's entity CRUD routes (docs/api-design.md).
+Mirrors tests/test_cli_entities.py's scenarios against the same store layer,
+exercised over HTTP instead of the CLI."""
 
 from __future__ import annotations
 

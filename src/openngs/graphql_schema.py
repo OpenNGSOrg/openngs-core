@@ -604,7 +604,7 @@ def _make_query_base() -> type:
                     FacetSchemaNode(schema_id=strawberry.ID(r[0]), schema_name=r[1]) for r in rows
                 ]
 
-        # --- event - read-only, no `replay` here: that's a write, and Phase 4 is
+        # --- event - read-only, no `replay` here: that's a write, and this schema is
         # query-only -------------------------------------------------------------
 
         @strawberry.field(description="Look up one event by event_id")  # type: ignore[untyped-decorator]

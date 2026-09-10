@@ -16,7 +16,7 @@ COMMENT ON TABLE "Entity" IS 'Mixin providing the three-layer identity common to
 COMMENT ON COLUMN "Entity".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Entity".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Entity".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Entity".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Entity".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Entity".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Subject" (
@@ -32,7 +32,7 @@ COMMENT ON TABLE "Subject" IS 'The source a specimen was taken from: a person, a
 COMMENT ON COLUMN "Subject".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Subject".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Subject".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Subject".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Subject".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Subject".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Specimen" (
@@ -48,7 +48,7 @@ COMMENT ON TABLE "Specimen" IS 'Material as collected, before any lab processing
 COMMENT ON COLUMN "Specimen".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Specimen".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Specimen".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Specimen".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Specimen".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Specimen".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Extract" (
@@ -64,7 +64,7 @@ COMMENT ON TABLE "Extract" IS 'Nucleic acid extracted from a Specimen. A split o
 COMMENT ON COLUMN "Extract".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Extract".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Extract".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Extract".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Extract".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Extract".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Library" (
@@ -80,7 +80,7 @@ COMMENT ON TABLE "Library" IS 'A sequencing-ready library prepared from an Extra
 COMMENT ON COLUMN "Library".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Library".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Library".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Library".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Library".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Library".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Pool" (
@@ -96,7 +96,7 @@ COMMENT ON TABLE "Pool" IS 'Multiple Libraries combined for a shared sequencing 
 COMMENT ON COLUMN "Pool".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Pool".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Pool".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Pool".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Pool".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Pool".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "SequencingRun" (
@@ -112,7 +112,7 @@ COMMENT ON TABLE "SequencingRun" IS 'One execution of a sequencing instrument.';
 COMMENT ON COLUMN "SequencingRun".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "SequencingRun".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "SequencingRun".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "SequencingRun".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "SequencingRun".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "SequencingRun".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "DataFile" (
@@ -128,7 +128,7 @@ COMMENT ON TABLE "DataFile" IS 'A reference to a data payload (FASTQ, BAM, VCF, 
 COMMENT ON COLUMN "DataFile".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "DataFile".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "DataFile".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "DataFile".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "DataFile".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "DataFile".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "AnalysisRun" (
@@ -144,7 +144,7 @@ COMMENT ON TABLE "AnalysisRun" IS 'One execution of an analysis pipeline or tool
 COMMENT ON COLUMN "AnalysisRun".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "AnalysisRun".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "AnalysisRun".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "AnalysisRun".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "AnalysisRun".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "AnalysisRun".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "DataFileSet" (
@@ -160,7 +160,7 @@ COMMENT ON TABLE "DataFileSet" IS 'A named group of DataFiles produced together 
 COMMENT ON COLUMN "DataFileSet".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "DataFileSet".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "DataFileSet".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "DataFileSet".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "DataFileSet".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "DataFileSet".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Protocol" (
@@ -176,7 +176,7 @@ COMMENT ON TABLE "Protocol" IS 'A documented procedure used by a process.';
 COMMENT ON COLUMN "Protocol".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Protocol".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Protocol".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Protocol".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Protocol".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Protocol".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Reagent" (
@@ -192,7 +192,7 @@ COMMENT ON TABLE "Reagent" IS 'A kit lot, not a kit type. Lot-level granularity 
 COMMENT ON COLUMN "Reagent".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Reagent".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Reagent".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Reagent".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Reagent".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Reagent".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Actor" (
@@ -208,7 +208,7 @@ COMMENT ON TABLE "Actor" IS 'A human or an instrument that performed or operated
 COMMENT ON COLUMN "Actor".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Actor".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Actor".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Actor".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Actor".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Actor".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Project" (
@@ -224,7 +224,7 @@ COMMENT ON TABLE "Project" IS 'An administrative grouping of specimens, runs, an
 COMMENT ON COLUMN "Project".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Project".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Project".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Project".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Project".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Project".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Context" (
@@ -240,7 +240,7 @@ COMMENT ON TABLE "Context" IS 'A generic scientific or analytical grouping that 
 COMMENT ON COLUMN "Context".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "Context".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "Context".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Context".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Context".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Context".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "DataPoint" (
@@ -266,7 +266,7 @@ COMMENT ON COLUMN "DataPoint".value_boolean IS 'Populated when value_kind is boo
 COMMENT ON COLUMN "DataPoint".internal_id IS 'Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject attribute.';
 COMMENT ON COLUMN "DataPoint".name IS 'Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.';
 COMMENT ON COLUMN "DataPoint".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "DataPoint".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "DataPoint".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "DataPoint".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Edge" (
@@ -285,7 +285,7 @@ COMMENT ON COLUMN "Edge".edge_id IS 'Opaque, immutable UUIDv7.';
 COMMENT ON COLUMN "Edge".edge_subject IS 'internal_id of the Entity this edge originates from. Named edge_subject, not subject, to leave `subject` free for CloudEvents'' own field once events.yaml''s slots merge into this schema''s single flat namespace.';
 COMMENT ON COLUMN "Edge".object IS 'internal_id of the Entity this edge points to.';
 COMMENT ON COLUMN "Edge".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "Edge".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "Edge".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "Edge".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "SameAsEdge" (
@@ -311,7 +311,7 @@ COMMENT ON COLUMN "SameAsEdge".edge_id IS 'Opaque, immutable UUIDv7.';
 COMMENT ON COLUMN "SameAsEdge".edge_subject IS 'internal_id of the Entity this edge originates from. Named edge_subject, not subject, to leave `subject` free for CloudEvents'' own field once events.yaml''s slots merge into this schema''s single flat namespace.';
 COMMENT ON COLUMN "SameAsEdge".object IS 'internal_id of the Entity this edge points to.';
 COMMENT ON COLUMN "SameAsEdge".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "SameAsEdge".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "SameAsEdge".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "SameAsEdge".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 
 CREATE TABLE "Facet" (
@@ -372,12 +372,12 @@ CREATE TABLE "FacetInstance" (
 	PRIMARY KEY (facet_id)
 );
 CREATE INDEX "ix_FacetInstance_facet_id" ON "FacetInstance" (facet_id);
-COMMENT ON TABLE "FacetInstance" IS 'A facet instance of a type not (yet, or ever) promoted to core. `data` is validated at write time against the JSON Schema `_schemaURL` points to - a local file for now fetching a remote URL isn''t supported yet.';
+COMMENT ON TABLE "FacetInstance" IS 'A facet instance of a type not (yet, or ever) promoted to core. `data` is validated at write time against the JSON Schema `_schemaURL` points to - a local file for now; fetching a remote URL isn''t supported yet.';
 COMMENT ON COLUMN "FacetInstance".facet_id IS 'Opaque, immutable UUIDv7, same shape as internal_id/edge_id.';
 COMMENT ON COLUMN "FacetInstance".facet_type IS 'The class name within the schema at _schemaURL this instance conforms to - a schema file can define more than one class.';
 COMMENT ON COLUMN "FacetInstance".data IS 'This instance''s fields, serialized as a JSON string. A plain string column, not a native json/jsonb type, so the same DDL is portable between SQLite and Postgres.';
 COMMENT ON COLUMN "FacetInstance".valid_time IS 'When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.';
-COMMENT ON COLUMN "FacetInstance".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
+COMMENT ON COLUMN "FacetInstance".retracted_at IS 'Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.';
 COMMENT ON COLUMN "FacetInstance".retracted_by_event IS 'event_id of the retraction event that set retracted_at.';
 COMMENT ON COLUMN "FacetInstance".attached_to IS 'internal_id of the Entity, or edge_id of the Edge, this facet describes.';
 COMMENT ON COLUMN "FacetInstance"._producer IS 'Identifies what produced this facet, e.g. a tool name and version, or a system name.';

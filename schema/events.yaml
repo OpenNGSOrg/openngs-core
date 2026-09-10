@@ -104,8 +104,8 @@ slots:
   retracted_at:
     range: datetime
     description: >-
-      Transaction time at which this row stopped being believed - set by a retraction event
-      NULL while the row is believed, which is what every read filters on. A
+      Transaction time at which this row stopped being believed - set by a retraction
+      event. NULL while the row is believed, which is what every read filters on. A
       transaction time, not a valid time: a retraction is a change of belief, not a change
       of what was true in the lab.
 
@@ -169,7 +169,6 @@ enums:
         description: An identity assertion is withdrawn.
       facet_instance_corrected:
         description: >-
-          A facet instance's data was wrong and is replaced, keeping the same facet_id
-          believed.
+          A facet instance's data was wrong and is replaced, keeping the same facet_id.
       facet_instance_retracted:
         description: A facet instance should never have been attached.

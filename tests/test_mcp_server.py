@@ -41,7 +41,7 @@ async def test_lists_one_tool_per_route(env: None) -> None:
         tools = await client.list_tools()
     names = {t.name for t in tools}
     # One per entity noun (create/list/show), plus link/facet/facet-schema/datapoint/event -
-    # the full Phase 3 REST surface, not a subset.
+    # the full REST surface, not a subset.
     assert "create_subject" in names
     assert "list_specimens" in names
     assert "show_data_file" in names

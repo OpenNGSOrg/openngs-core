@@ -8,7 +8,7 @@ HTTP hop and no separate `make api` server needed to run this.
 Needs the same `OPENNGS_ORG`/`OPENNGS_NAMESPACE`/`OPENNGS_DB_URL` env vars api.py already
 reads - there is no MCP-specific configuration.
 
-**The one hand-written exception: `execute_graphql`.** `/graphql` (Phase 4) is a normal
+**The one hand-written exception: `execute_graphql`.** `/graphql` is a normal
 FastAPI route, so `from_fastapi` finds it and would generate `handle_http_post_graphql_get`/
 `_post` tools same as any other - except Strawberry's `GraphQLRouter` takes a raw Starlette
 `Request`, not a typed Pydantic model, so it has no request-body schema in the OpenAPI

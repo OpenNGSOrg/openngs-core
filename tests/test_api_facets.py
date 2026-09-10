@@ -1,5 +1,5 @@
-"""End-to-end tests for the REST API's `facet`/`facet schema` routes (Phase 3 backlog item
-3, docs/api-design.md). Mirrors the relevant scenarios in tests/test_cli_facets.py."""
+"""End-to-end tests for the REST API's `facet`/`facet schema` routes
+(docs/api-design.md). Mirrors the relevant scenarios in tests/test_cli_facets.py."""
 
 from __future__ import annotations
 

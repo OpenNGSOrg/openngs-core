@@ -1,5 +1,5 @@
-"""End-to-end tests for the REST API's `link` routes (Phase 3 backlog item 2,
-docs/api-design.md). Mirrors the relevant scenarios in tests/test_cli_entities.py and
+"""End-to-end tests for the REST API's `link` routes (docs/api-design.md).
+Mirrors the relevant scenarios in tests/test_cli_entities.py and
 tests/test_store_repo.py, exercised over HTTP instead of the CLI."""
 
 from __future__ import annotations

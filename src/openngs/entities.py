@@ -1,7 +1,7 @@
 """The registry of the 14 `EntityConfig`-shaped entity types - everything in the closed
 entity set except `DataPoint`, which needs extra required fields (`--type`/`--kind`/`--value`
 in the CLI) that don't fit this generic create/list/show shape. Shared between `cli.py` and
-`api.py` (Phase 3, docs/api-design.md) so both clients build entities the same way instead of
+`api.py` (docs/api-design.md) so both clients build entities the same way instead of
 drifting: same parent-edge rules, same plural/URL-safe names, same model classes.
 """
 

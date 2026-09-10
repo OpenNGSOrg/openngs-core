@@ -1,6 +1,6 @@
-"""Server-side settings and the per-request `Database` dependency, shared by `api.py` (REST,
-Phase 3) and `graphql_schema.py` (GraphQL, Phase 4) - split out so neither has to import the
-other just to get at this. Same three env vars the CLI already reads
+"""Server-side settings and the per-request `Database` dependency, shared by `api.py`
+(REST) and `graphql_schema.py` (GraphQL) - split out so neither has to import the other
+just to get at this. Same three env vars the CLI already reads
 (`OPENNGS_ORG`/`OPENNGS_NAMESPACE`/`OPENNGS_DB_URL`); a deployment serves one lab's
 namespace, the same way one CLI invocation's env already does.
 """
