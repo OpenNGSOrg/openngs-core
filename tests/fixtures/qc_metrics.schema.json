@@ -1,0 +1,30 @@
+{
+  "$defs": {
+    "QcMetricsFacet": {
+      "additionalProperties": false,
+      "description": "Open-ended named QC metrics, e.g. from a MultiQC report. Test fixture, generated via `linkml generate json-schema` from a worked-example LinkML facet schema (docs/facets/authoring-a-facet.md).",
+      "properties": {
+        "metric_name": {
+          "type": "string"
+        },
+        "metric_value": {
+          "type": "number"
+        },
+        "sample_name": {
+          "type": ["string", "null"]
+        },
+        "tool": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": ["metric_name", "metric_value"],
+      "title": "QcMetricsFacet",
+      "type": "object"
+    }
+  },
+  "$id": "https://acme.example/schema/facets/qc_metrics",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "additionalProperties": true,
+  "title": "acme_facet_qc_metrics",
+  "type": "object"
+}

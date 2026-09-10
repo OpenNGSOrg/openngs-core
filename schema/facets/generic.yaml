@@ -1,0 +1,58 @@
+id: https://openngs.org/schema/openngs/facets/generic
+name: openngs_facet_generic
+title: OpenNGS Generic Facet Instance
+description: >-
+  Storage for facet instances whose type isn't a promoted core facet - which, per the
+  promotion rule, is most facets, by design. See the facet authoring guide for the full
+  rationale: one concrete table generated the same way as everything else, holding the
+  instance's fields as a JSON string rather than one generated table per facet type, since
+  OpenNGS can't know a third party's facet schema ahead of time. A promoted core facet gets
+  its own generated table instead and never lives here.
+prefixes:
+  linkml: https://w3id.org/linkml/
+  openngs: https://openngs.org/schema/openngs/
+default_prefix: openngs
+default_range: string
+
+imports:
+  - linkml:types
+  - _base
+  # valid_time / retracted_at / retracted_by_event are declared there.
+  - ../events
+
+classes:
+  FacetInstance:
+    is_a: Facet
+    description: >-
+      A facet instance of a type not (yet, or ever) promoted to core. `data` is validated
+      at write time against the JSON Schema `_schemaURL` points to - a local file for now
+      fetching a remote URL isn't supported yet.
+    slots:
+      - facet_id
+      - facet_type
+      - data
+      - valid_time
+      - retracted_at
+      - retracted_by_event
+
+slots:
+  facet_id:
+    identifier: true
+    range: string
+    required: true
+    description: Opaque, immutable UUIDv7, same shape as internal_id/edge_id.
+    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+
+  facet_type:
+    range: string
+    required: true
+    description: >-
+      The class name within the schema at _schemaURL this instance conforms to - a schema
+      file can define more than one class.
+
+  data:
+    range: string
+    required: true
+    description: >-
+      This instance's fields, serialized as a JSON string. A plain string column, not a
+      native json/jsonb type, so the same DDL is portable between SQLite and Postgres.

@@ -1,0 +1,74 @@
+# Postgres + the REST API (docs/api-design.md) + the MCP server (docs/mcp-design.md),
+# together. `make compose-up` / `make compose-down` (CONTAINER_ENGINE=podman if you don't
+# have docker) wrap this; see those targets' comments in the Makefile for how this differs
+# from `make db-postgres` (that one's a fast, always-destructive reset; this one persists
+# data in a named volume across restarts). Org/ns below are example values, same as
+# docs/getting-started.md's - override them (an .env file, or `OPENNGS_ORG=... podman
+# compose up`) for anything real.
+services:
+  postgres:
+    image: docker.io/library/postgres:16
+    environment:
+      POSTGRES_USER: openngs
+      POSTGRES_PASSWORD: openngs
+      POSTGRES_DB: openngs
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Postgres runs every *.sql it finds here, once, only the first time this volume is
+      # initialized (an empty /var/lib/postgresql/data) - never on a later `compose up`
+      # against the same volume, and never on a schema change without a fresh volume too
+      # (`make compose-down; podman volume rm openngs_postgres_data`, or `compose down -v`).
+      - ./generated/schema.postgres.sql:/docker-entrypoint-initdb.d/schema.sql:ro,Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openngs"]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: .
+    environment:
+      OPENNGS_ORG: acme-genomics
+      OPENNGS_NAMESPACE: core-lab
+      OPENNGS_DB_URL: postgresql://openngs:openngs@postgres:5432/openngs
+      # Example tokens, as a JSON object of token -> principal. Replace them before this
+      # is reachable by anything you do not control; a real deployment should mount a
+      # secret and point OPENNGS_AUTH_TOKENS_FILE at it instead. Setting
+      # OPENNGS_AUTH_MODE=none runs with no authentication at all, which is only safe
+      # behind your own gateway.
+      OPENNGS_AUTH_TOKENS: '{"dev-token":"developer","mcp-token":{"principal":"mcp","role":"write"}}'
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Same image as `api` (same Dockerfile, same source, fastmcp already a real dependency -
+  # not dev-only, so it's already in the image `api` builds) with the CMD overridden to run
+  # the MCP server instead of uvicorn. Independent of `api` - it holds its own in-process
+  # reference to the same FastAPI app object rather than proxying HTTP calls to the `api`
+  # container - so it only depends on postgres, not on `api` being up.
+  mcp:
+    build: .
+    command: ["uv", "run", "--no-sync", "python", "-m", "openngs.mcp_server"]
+    environment:
+      OPENNGS_ORG: acme-genomics
+      OPENNGS_NAMESPACE: core-lab
+      OPENNGS_DB_URL: postgresql://openngs:openngs@postgres:5432/openngs
+      OPENNGS_AUTH_TOKENS: '{"dev-token":"developer","mcp-token":{"principal":"mcp","role":"write"}}'
+      # The MCP server is a client of the API like any other, with a principal of its own
+      # so recorded_by says which door a write came through.
+      OPENNGS_MCP_TOKEN: mcp-token
+      OPENNGS_MCP_TRANSPORT: http
+      OPENNGS_MCP_HOST: 0.0.0.0
+      OPENNGS_MCP_PORT: "8001"
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

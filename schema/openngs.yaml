@@ -1,0 +1,310 @@
+id: https://openngs.org/schema/openngs
+name: openngs
+title: OpenNGS
+description: >-
+  An open standard for sample lineage in sequencing labs. A frozen core entity graph, with
+  all variability confined to versioned facets.
+license: https://www.apache.org/licenses/LICENSE-2.0
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  openngs: https://openngs.org/schema/openngs/
+default_prefix: openngs
+default_range: string
+
+imports:
+  - linkml:types
+  - facets/_base
+  - facets/generic
+  - facets/schema_store
+  - events
+
+classes:
+
+  Entity:
+    abstract: true
+    description: >-
+      Mixin providing the three-layer identity common to every node in the OpenNGS graph.
+      Concrete entity types add no further slots by design: "freeze the topology, extend
+      the nodes" means all type-specific detail belongs in facets, never in the entity
+      itself. The one explicit exception is DataPoint, whose entire reason for
+      existing is a value and what kind of measurement it is.
+    slots:
+      - internal_id
+      - name
+      - xrefs
+      - valid_time
+      - retracted_at
+      - retracted_by_event
+
+  Subject:
+    is_a: Entity
+    description: >-
+      The source a specimen was taken from: a person, an organism, or an environmental
+      sampling site (a lake, a river station, a soil plot). The root of every physical
+      chain - what lets specimens taken from the same source, at different times, be
+      recognized as such, and what a cohort, a pedigree, or a per-site time series groups.
+
+  Specimen:
+    is_a: Entity
+    description: >-
+      Material as collected, before any lab processing. An aliquot taken from a Specimen is
+      itself a Specimen, linked to its parent via a derived_from edge — aliquoting is a
+      relationship, not a distinct entity type.
+
+  Extract:
+    is_a: Entity
+    description: >-
+      Nucleic acid extracted from a Specimen. A split or re-aliquoted portion of an Extract
+      is itself an Extract, linked to its parent via derived_from.
+
+  Library:
+    is_a: Entity
+    description: >-
+      A sequencing-ready library prepared from an Extract. A split portion of a Library is
+      itself a Library, linked to its parent via derived_from.
+
+  Pool:
+    is_a: Entity
+    description: >-
+      Multiple Libraries combined for a shared sequencing run. A re-pooled or split portion
+      of a Pool is itself a Pool, linked to its parent via derived_from.
+
+  SequencingRun:
+    is_a: Entity
+    description: One execution of a sequencing instrument.
+
+  DataFile:
+    is_a: Entity
+    description: >-
+      A reference to a data payload (FASTQ, BAM, VCF, ...). OpenNGS is a metadata plane,
+      not a data plane: it never stores the payload itself, only references to it.
+
+  AnalysisRun:
+    is_a: Entity
+    description: One execution of an analysis pipeline or tool.
+
+  DataFileSet:
+    is_a: Entity
+    description: >-
+      A named group of DataFiles produced together by one SequencingRun or AnalysisRun -
+      a raw BCL run folder, or the result files of one pipeline execution. Member DataFiles
+      join via part_of; the set itself is linked to the run that made it via produced_by,
+      the same predicate an individual DataFile uses. A DataFileSet may itself be part_of
+      another DataFileSet, e.g. a per-sample FASTQ subset nested inside a multi-sample
+      demultiplexing run's overall output set.
+
+  Protocol:
+    is_a: Entity
+    description: A documented procedure used by a process.
+
+  Reagent:
+    is_a: Entity
+    description: >-
+      A kit lot, not a kit type. Lot-level granularity is intentional: it is what makes the
+      QC-by-kit-lot forensics query possible.
+
+  Actor:
+    is_a: Entity
+    description: A human or an instrument that performed or operated a process.
+
+  Project:
+    is_a: Entity
+    description: An administrative grouping of specimens, runs, and analyses.
+
+  Context:
+    is_a: Entity
+    description: >-
+      A generic scientific or analytical grouping that gives meaning to a set of entities
+      considered together, e.g. a cohort of Subjects, a cohort of Specimens, or a pedigree
+      linking the Subjects in a familial genetic test. Distinct from Project, which is an
+      administrative grouping (funding, ownership) rather than a scientific one; the two
+      commonly cut across each other and both may apply to the same entity. Any entity type
+      may join a Context via part_of; what role it plays in that context (e.g. proband,
+      affected, control) is not a field on the entity or the edge but a facet attached to
+      the part_of edge, so it stays open-ended without growing this closed entity/edge set.
+
+  DataPoint:
+    is_a: Entity
+    description: >-
+      An atomic, independently-correctable measurement or fact - a QC metric worth
+      cross-cutting queries, a business-logic value, or a fact pulled from a third-party
+      system. Formal, vendor-versioned, multi-field tool output (FastQC, DRAGEN, ...)
+      belongs in a Facet instead, kept whole; a DataPoint is for the specific fields worth
+      querying across the graph on their own, or facts that never came from a tool report
+      at all.
+    slots:
+      - datapoint_type
+      - value_kind
+      - value_number
+      - value_text
+      - value_boolean
+
+  Edge:
+    abstract: true
+    description: >-
+      A lineage relationship or identity assertion between two entities. Edges are
+      first-class objects, not slots on Entity, because facets can attach to an edge and
+      same_as needs its own evidentiary fields.
+    slots:
+      - edge_id
+      - edge_subject
+      - predicate
+      - object
+      - valid_time
+      - retracted_at
+      - retracted_by_event
+
+  SameAsEdge:
+    is_a: Edge
+    description: >-
+      An identity assertion, never a merge: same_as never collapses two nodes into one.
+      Deduplication is resolved at query time via same_as closure at a caller-supplied
+      confidence threshold.
+    slots:
+      - asserted_by
+      - asserted_at
+      - method
+      - confidence
+    slot_usage:
+      predicate:
+        equals_string: same_as
+
+slots:
+  internal_id:
+    identifier: true
+    range: string
+    required: true
+    description: >-
+      Opaque, immutable UUIDv7. Never derived from a barcode, accession, date, or subject
+      attribute.
+    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+
+  name:
+    range: string
+    required: true
+    description: "Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}."
+    pattern: "^openngs://[^/]+/[^/]+/[^/]+/.+$"
+
+  xrefs:
+    range: string
+    multivalued: true
+    description: >-
+      CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678.
+      Many-to-many, additive, never authoritative.
+
+  edge_id:
+    identifier: true
+    range: string
+    required: true
+    description: Opaque, immutable UUIDv7.
+    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+
+  edge_subject:
+    range: string
+    required: true
+    description: >-
+      internal_id of the Entity this edge originates from. Named edge_subject, not subject,
+      to leave `subject` free for CloudEvents' own field once events.yaml's slots merge into
+      this schema's single flat namespace.
+
+  object:
+    range: string
+    required: true
+    description: internal_id of the Entity this edge points to.
+
+  predicate:
+    range: EdgePredicate
+    required: true
+
+  asserted_by:
+    range: string
+    required: true
+    description: internal_id of the Actor making this identity assertion.
+
+  asserted_at:
+    range: datetime
+    required: true
+    description: When the identity assertion was made.
+
+  method:
+    range: string
+    required: true
+    description: >-
+      How the assertion was made, e.g. barcode_scan, operator_claim,
+      fingerprint_concordance, submission_receipt.
+
+  confidence:
+    range: float
+    required: true
+    minimum_value: 0
+    maximum_value: 1
+
+  datapoint_type:
+    range: string
+    required: true
+    description: >-
+      What was measured, as a CURIE. Prefer a term from schema/vocabularies/datapoints.yaml
+      (e.g. openngs-dp:percent_duplication) where one exists; fall back to a vendor or
+      institution CURIE otherwise (e.g. acme-lims:sample-priority). Not a closed enum: the
+      datapoint vocabulary is additive, and most business-logic datapoints will
+      never belong to it at all.
+
+  value_kind:
+    range: ValueKind
+    required: true
+    description: Which of value_number/value_text/value_boolean is populated.
+
+  value_number:
+    range: float
+    description: >-
+      Populated when value_kind is number. Covers both integer and float - a float
+      represents realistic QC-scale integer magnitudes (read counts, etc.) exactly, so a
+      separate integer column isn't worth it.
+
+  value_text:
+    range: string
+    description: Populated when value_kind is text.
+
+  value_boolean:
+    range: boolean
+    description: Populated when value_kind is boolean.
+
+enums:
+  EdgePredicate:
+    permissible_values:
+      derived_from:
+        description: >-
+          Material or data transformation. The backbone of the graph. Also used
+          self-referentially (Specimen→Specimen, Extract→Extract, Library→Library,
+          Pool→Pool) to represent aliquoting, splitting, or re-pooling, so there is no
+          separate Aliquot entity type.
+      part_of:
+        description: >-
+          Composition, e.g. pool membership, DataFileSet membership (including a
+          DataFileSet nested inside another), or membership in a Context.
+      characterizes:
+        description: >-
+          A DataPoint to the entity it characterizes: DataPoint→Entity. Replaces
+          measured_by - retired, unused, and pointed the wrong way for a
+          DataPoint's own `create` to work like every other entity's. Unconstrained target
+          type, like derived_from/part_of/same_as.
+      produced_by:
+        description: Links an output to the process that made it.
+      used:
+        description: >-
+          Links a process to the Protocol, Reagent, or Actor it consumed, or to the
+          DataFile / DataFileSet it took as input - so an AnalysisRun can assert exactly
+          which dataset it ran against, independent of what its outputs' derived_from edges
+          declare.
+      same_as:
+        description: An identity assertion, always carried on a SameAsEdge instance.
+
+  ValueKind:
+    permissible_values:
+      number:
+        description: value_number is populated.
+      text:
+        description: value_text is populated.
+      boolean:
+        description: value_boolean is populated.

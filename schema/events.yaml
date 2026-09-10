@@ -1,0 +1,175 @@
+id: https://openngs.org/schema/openngs/events
+name: openngs_events
+title: OpenNGS Event Log
+description: >-
+  The append-only event log invariants 1 and 2 require - a CloudEvents 1.0 envelope, with
+  OpenNGS's own valid_time/transaction_time and supersedes/supersede_reason promoted to
+  real typed columns (not buried in a JSON payload) so either bitemporal axis stays
+  queryable without JSON extraction - the same lesson already applied to DataPoint.
+  supersedes exists as a column but is not yet populated.
+prefixes:
+  linkml: https://w3id.org/linkml/
+  openngs: https://openngs.org/schema/openngs/
+default_prefix: openngs
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+  Event:
+    description: >-
+      One occurrence in the append-only log - a CloudEvents 1.0 envelope. Never updated or
+      deleted once written (invariant 1); a correction would be a new Event whose
+      supersedes names the event_id it corrects (not yet emitted by anything).
+    slots:
+      - event_id
+      - source
+      - type
+      - specversion
+      - subject
+      - time
+      - datacontenttype
+      - valid_time
+      - transaction_time
+      - recorded_by
+      - supersedes
+      - supersede_reason
+      - payload
+
+slots:
+  event_id:
+    identifier: true
+    range: string
+    required: true
+    description: Opaque, immutable UUIDv7 - CloudEvents' `id`.
+    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+
+  source:
+    range: string
+    required: true
+    description: >-
+      CloudEvents `source` - identifies what emitted this event, e.g. "openngs-cli". Not a
+      URI validated against any scheme, just a string identifying the producer.
+
+  type:
+    range: EventType
+    required: true
+    description: CloudEvents `type` - what kind of fact this event records.
+
+  specversion:
+    range: string
+    required: true
+    description: CloudEvents spec version. Always "1.0" for now.
+
+  subject:
+    range: string
+    description: >-
+      CloudEvents `subject` - the internal_id/edge_id/facet_id/schema_id this event
+      concerns, when there's a single obvious one. Kept as `subject`, matching the
+      CloudEvents spec field name exactly; `Edge`'s own subject-of-a-triple slot is named
+      `edge_subject` instead, to leave this name free.
+
+  time:
+    range: datetime
+    required: true
+    description: >-
+      CloudEvents `time` - when this occurrence was recorded. Mirrors transaction_time;
+      kept as its own field because CloudEvents consumers expect it at the envelope level.
+
+  datacontenttype:
+    range: string
+    description: CloudEvents `datacontenttype` for `payload`. Always "application/json" for now.
+
+  valid_time:
+    range: datetime
+    required: true
+    description: >-
+      When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.
+
+  transaction_time:
+    range: datetime
+    required: true
+    description: When OpenNGS learned the fact (invariant 2). Always wall-clock now at write time.
+
+  recorded_by:
+    range: string
+    description: >-
+      Who recorded this event - the authenticated principal for an API write, the operating
+      system or configured identity for a CLI one. Distinct from `source`, which says which
+      program produced the event ("openngs-api"), not which person or service was behind it.
+      Optional: a deployment that has deliberately turned authentication off has no
+      principal to record, and saying so honestly is better than inventing one.
+
+  retracted_at:
+    range: datetime
+    description: >-
+      Transaction time at which this row stopped being believed - set by a retraction event
+      NULL while the row is believed, which is what every read filters on. A
+      transaction time, not a valid time: a retraction is a change of belief, not a change
+      of what was true in the lab.
+
+  retracted_by_event:
+    range: string
+    description: event_id of the retraction event that set retracted_at.
+
+  supersedes:
+    range: string
+    description: >-
+      event_id of a prior event this one corrects (invariant 1). Not yet populated by
+      anything the CLI does - the column exists so this schema doesn't need to change when
+      corrections are designed.
+
+  supersede_reason:
+    range: string
+    description: >-
+      Why the correction was made. Required alongside supersedes: a correction with no
+      stated reason is not worth more than the wrong fact it replaces.
+
+  payload:
+    range: string
+    required: true
+    description: >-
+      The type-specific content (CloudEvents `data`, minus the bitemporal/supersedes
+      fields already promoted to real columns above), as a JSON string - the same portable
+      TEXT-column pattern already used for FacetInstance.data/FacetSchema.json_schema.
+
+enums:
+  EventType:
+    permissible_values:
+      entity_created:
+        description: >-
+          A new row in some entity table (any of the closed set, including DataPoint).
+      edge_created:
+        description: A new row in the Edge table (any predicate but same_as).
+      same_as_edge_created:
+        description: A new row in the SameAsEdge table.
+      facet_instance_attached:
+        description: A new row in FacetInstance.
+      facet_schema_registered:
+        description: A new row in FacetSchema.
+      entity_xref_added:
+        description: >-
+          One more external identifier for an entity that already exists. Additive, not a
+          correction: the entity was right, it now has one more name. The commonest
+          late-arriving fact there is - an ENA/SRA accession, a barcode assigned after
+          registration, an ID from a system integrated later.
+      entity_corrected:
+        description: >-
+          An entity's content was wrong and is replaced. The payload carries the
+          full corrected state, never a diff, so replay needs no knowledge of what came
+          before. Covers DataPoint's value_* fields too.
+      entity_retracted:
+        description: >-
+          An entity should never have existed. Sets retracted_at; the row stays
+          in the projection but is filtered out of every read by default.
+      edge_retracted:
+        description: A relationship in the Edge table is false and stops being believed.
+      same_as_edge_retracted:
+        description: An identity assertion is withdrawn.
+      facet_instance_corrected:
+        description: >-
+          A facet instance's data was wrong and is replaced, keeping the same facet_id
+          believed.
+      facet_instance_retracted:
+        description: A facet instance should never have been attached.

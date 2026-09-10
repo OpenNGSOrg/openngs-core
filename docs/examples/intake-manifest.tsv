@@ -1,0 +1,60 @@
+kind	type	local_id	parent	from	to	xrefs	valid_time
+# The intake half of docs/worked-example.md, as a LIMS would export it.
+# Load with:  openngs ingest manifest docs/examples/intake-manifest.tsv
+
+# Shared context: the study, and the family this trio belongs to.
+entity	project	PROJ-RARE-2026
+entity	context	TRIO-0042
+
+# People, instruments, kit lots and protocols. Lot-level, not kit-type.
+entity	actor	ACTOR-JDOE				orcid:0000-0002-1825-0097
+entity	actor	ACTOR-NOVASEQ-01				illumina.serial:A01234
+entity	reagent	KIT-QIAAMP-LOT-A1				qiagen.lot:172345678
+entity	reagent	KIT-NEXTERA-LOT-B7				illumina.lot:20654321
+entity	protocol	SOP-DNA-EXTRACT-v3
+entity	protocol	SOP-LIB-PREP-v2
+
+# proband: blood drawn 8 Jan, extracted 12 Jan, library prepped 13 Jan.
+entity	subject	SUBJ-0042-P
+edge	part_of			SUBJ-0042-P	TRIO-0042
+edge	part_of			SUBJ-0042-P	PROJ-RARE-2026
+entity	specimen	SPEC-0042-P	SUBJ-0042-P			barcode:TUBE-0042-P	2026-01-08T10:30:00
+entity	extract	EXT-0042-P	SPEC-0042-P				2026-01-12T09:00:00
+edge	used			EXT-0042-P	KIT-QIAAMP-LOT-A1		2026-01-12T09:00:00
+edge	used			EXT-0042-P	SOP-DNA-EXTRACT-v3		2026-01-12T09:00:00
+edge	used			EXT-0042-P	ACTOR-JDOE		2026-01-12T09:00:00
+entity	library	LIB-0042-P	EXT-0042-P				2026-01-13T11:00:00
+edge	used			LIB-0042-P	KIT-NEXTERA-LOT-B7		2026-01-13T11:00:00
+edge	used			LIB-0042-P	SOP-LIB-PREP-v2		2026-01-13T11:00:00
+
+# mother: blood drawn 8 Jan, extracted 12 Jan, library prepped 13 Jan.
+entity	subject	SUBJ-0042-M
+edge	part_of			SUBJ-0042-M	TRIO-0042
+edge	part_of			SUBJ-0042-M	PROJ-RARE-2026
+entity	specimen	SPEC-0042-M	SUBJ-0042-M			barcode:TUBE-0042-M	2026-01-08T10:30:00
+entity	extract	EXT-0042-M	SPEC-0042-M				2026-01-12T09:00:00
+edge	used			EXT-0042-M	KIT-QIAAMP-LOT-A1		2026-01-12T09:00:00
+edge	used			EXT-0042-M	SOP-DNA-EXTRACT-v3		2026-01-12T09:00:00
+edge	used			EXT-0042-M	ACTOR-JDOE		2026-01-12T09:00:00
+entity	library	LIB-0042-M	EXT-0042-M				2026-01-13T11:00:00
+edge	used			LIB-0042-M	KIT-NEXTERA-LOT-B7		2026-01-13T11:00:00
+edge	used			LIB-0042-M	SOP-LIB-PREP-v2		2026-01-13T11:00:00
+
+# father: blood drawn 8 Jan, extracted 12 Jan, library prepped 13 Jan.
+entity	subject	SUBJ-0042-F
+edge	part_of			SUBJ-0042-F	TRIO-0042
+edge	part_of			SUBJ-0042-F	PROJ-RARE-2026
+entity	specimen	SPEC-0042-F	SUBJ-0042-F			barcode:TUBE-0042-F	2026-01-08T10:30:00
+entity	extract	EXT-0042-F	SPEC-0042-F				2026-01-12T09:00:00
+edge	used			EXT-0042-F	KIT-QIAAMP-LOT-A1		2026-01-12T09:00:00
+edge	used			EXT-0042-F	SOP-DNA-EXTRACT-v3		2026-01-12T09:00:00
+edge	used			EXT-0042-F	ACTOR-JDOE		2026-01-12T09:00:00
+entity	library	LIB-0042-F	EXT-0042-F				2026-01-13T11:00:00
+edge	used			LIB-0042-F	KIT-NEXTERA-LOT-B7		2026-01-13T11:00:00
+edge	used			LIB-0042-F	SOP-LIB-PREP-v2		2026-01-13T11:00:00
+
+# Pool the three libraries. A later row may name what an earlier row created.
+entity	pool	POOL-20260113					2026-01-13T15:00:00
+edge	part_of			LIB-0042-P	POOL-20260113
+edge	part_of			LIB-0042-M	POOL-20260113
+edge	part_of			LIB-0042-F	POOL-20260113

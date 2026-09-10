@@ -1,0 +1,45 @@
+{
+    "$defs": {
+        "QcMetricsFacet": {
+            "additionalProperties": false,
+            "description": "Open-ended named QC metrics, e.g. from a MultiQC report. One instance per (tool, sample, metric) - attach several to the same DataFile/AnalysisRun rather than inventing one big combined shape.",
+            "properties": {
+                "metric_name": {
+                    "description": "Prefer a CURIE from OpenNGS's datapoint vocabulary (schema/vocabularies/datapoints.yaml, e.g. openngs-dp:percent_duplication) when the metric matches a known concept there - see the guide's \"Making fields comparable across facets\" section. Fall back to a producer-scoped raw string (e.g. fastqc:duplicate_percentage) otherwise.",
+                    "type": "string"
+                },
+                "metric_value": {
+                    "type": "number"
+                },
+                "sample_name": {
+                    "description": "The sample identifier as reported by the QC tool, before any identity reconciliation.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "tool": {
+                    "description": "The tool that produced this metric, e.g. fastqc, samtools, star.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "metric_name",
+                "metric_value"
+            ],
+            "title": "QcMetricsFacet",
+            "type": "object"
+        }
+    },
+    "$id": "https://acme.example/schema/facets/qc_metrics",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "additionalProperties": true,
+    "metamodel_version": "1.11.0",
+    "title": "acme_facet_qc_metrics",
+    "type": "object",
+    "version": null
+}
+

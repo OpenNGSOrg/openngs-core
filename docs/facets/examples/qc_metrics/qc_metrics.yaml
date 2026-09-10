@@ -1,0 +1,56 @@
+id: https://acme.example/schema/facets/qc_metrics
+name: acme_facet_qc_metrics
+title: Acme Genomics QC Metrics Facet
+description: >-
+  The worked example for docs/facets/authoring-a-facet.md - a vendor-namespaced facet,
+  not part of OpenNGS core. One named QC metric per instance, as a QC tool such as
+  MultiQC reports it.
+
+  This schema does not import OpenNGS's `facets/_base.yaml` `Facet` class. A facet schema
+  is free to do so (`is_a: Facet` gives you `attached_to`/`_producer`/`_schemaURL` slots
+  for free if you're also generating Pydantic models from it), but OpenNGS's runtime only
+  ever reads `_producer`/`_schemaURL`/`attached_to` from the CLI's own `openngs facet
+  attach` flags and validates `data` against whatever class this file names - it never
+  requires the facet's own schema to structurally include those three fields itself.
+prefixes:
+  linkml: https://w3id.org/linkml/
+  acme: https://acme.example/schema/facets/qc_metrics/
+default_prefix: acme
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+  QcMetricsFacet:
+    description: >-
+      Open-ended named QC metrics, e.g. from a MultiQC report. One instance per
+      (tool, sample, metric) - attach several to the same DataFile/AnalysisRun rather than
+      inventing one big combined shape.
+    slots:
+      - tool
+      - sample_name
+      - metric_name
+      - metric_value
+
+slots:
+  tool:
+    range: string
+    description: "The tool that produced this metric, e.g. fastqc, samtools, star."
+
+  sample_name:
+    range: string
+    description: The sample identifier as reported by the QC tool, before any identity reconciliation.
+
+  metric_name:
+    range: string
+    required: true
+    description: >-
+      Prefer a CURIE from OpenNGS's datapoint vocabulary (schema/vocabularies/datapoints.yaml,
+      e.g. openngs-dp:percent_duplication) when the metric matches a known concept there -
+      see the guide's "Making fields comparable across facets" section. Fall back to a
+      producer-scoped raw string (e.g. fastqc:duplicate_percentage) otherwise.
+
+  metric_value:
+    range: float
+    required: true

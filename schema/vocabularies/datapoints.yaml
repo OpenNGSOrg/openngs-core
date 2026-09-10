@@ -1,0 +1,79 @@
+id: https://openngs.org/schema/openngs/vocabularies/datapoints
+name: openngs_vocabulary_datapoints
+title: OpenNGS Datapoint Vocabulary
+description: >-
+  A seed, extensible registry of canonical "datapoint" concepts for the NGS/QC space where
+  no existing ontology (OBI, EDAM, STATO, NCIT, ...) yet has a term. This is not part of the
+  core entity/edge schema and is never imported by schema/openngs.yaml: it exists purely for
+  facet authors to bind their own fields to, so that two independently-authored facets can
+  declare the same underlying concept. See docs/facets/authoring-a-facet.md for how this
+  is used and why it's shaped this way.
+
+  Each permissible value's CURIE is `openngs-dp:<key>` by convention, e.g. the
+  `percent_duplication` entry below is `openngs-dp:percent_duplication`. Where a value's
+  `meaning` or `exact_mappings`/`close_mappings` is populated, it points to a real term in an
+  existing ontology and that mapping should be preferred over the openngs-dp CURIE wherever
+  a consumer can use it. Where those are empty, no equivalent term is known to exist yet in
+  OBI/EDAM/STATO/NCIT — this repo does not assert one; that is deliberately left as an open
+  reconciliation task rather than guessed at.
+
+  This vocabulary grows by addition, never by renaming or removing a permissible value once
+  published (facet schemas out in the world may already reference it by CURIE) — deprecate
+  with `deprecated:`/`deprecated_element_has_exact_replacement:` instead of deleting.
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  openngs-dp: https://openngs.org/vocab/datapoint/
+default_prefix: openngs-dp
+
+imports:
+  - linkml:types
+
+enums:
+  Datapoint:
+    description: >-
+      Canonical NGS/QC datapoint concepts. Seed set only — mint new entries by adding a
+      permissible value, in its own PR/commit, never by repurposing an existing key.
+    permissible_values:
+      percent_duplication:
+        description: Fraction of reads/read-pairs flagged as duplicates, expressed as a percentage.
+      percent_gc:
+        description: GC content of the sequenced bases, expressed as a percentage.
+      mean_quality_score:
+        description: Mean per-base or per-read Phred quality score.
+      total_reads:
+        description: Total number of reads (or read pairs, per producer convention) in the input.
+      total_bases:
+        description: Total number of sequenced bases in the input.
+      percent_aligned:
+        description: Fraction of reads that aligned to the reference, expressed as a percentage.
+      mean_coverage:
+        description: Mean depth of coverage across the targeted or genome-wide region.
+      percent_q30:
+        description: Percentage of bases with a quality score of Q30 or higher.
+      insert_size_mean:
+        description: Mean fragment insert size, in base pairs.
+      adapter_content_percent:
+        description: Fraction of bases attributable to adapter sequence, expressed as a percentage.
+
+      # --- how a run ended (the DataPoint model applied to SequencingRun/AnalysisRun).
+      # A run's outcome is a fact about what happened, recorded after the fact, not a status
+      # field driving anything: nothing in OpenNGS reads these, and no consumer should treat
+      # them as readiness signals: choreography, not orchestration.
+      run_outcome:
+        description: >-
+          How a run ended, as text - succeeded, failed, aborted, or partial. Recorded on
+          the SequencingRun or AnalysisRun it characterizes, never stored as an
+          authoritative status on the critical path.
+      exit_status:
+        description: The process exit status a run terminated with, as a number.
+      run_duration_seconds:
+        description: Wall-clock duration of a run, in seconds.
+      run_started_at:
+        description: When a run began, as an ISO 8601 timestamp in text.
+      run_finished_at:
+        description: When a run ended, as an ISO 8601 timestamp in text.
+      error_summary:
+        description: >-
+          A short human-readable summary of why a run failed. The full log stays a
+          DataFile; this is the one line worth querying across runs.

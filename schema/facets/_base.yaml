@@ -1,0 +1,40 @@
+id: https://openngs.org/schema/openngs/facets/base
+name: openngs_facet_base
+prefixes:
+  linkml: https://w3id.org/linkml/
+  openngs: https://openngs.org/schema/openngs/
+default_prefix: openngs
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+  Facet:
+    abstract: true
+    description: >-
+      A named, versioned, independently-schema'd metadata object attached to an entity or
+      edge. _producer and _schemaURL are mandatory on every facet so an unknown consumer
+      can tell what wrote it and validate it without prior knowledge.
+    slots:
+      - attached_to
+      - _producer
+      - _schemaURL
+
+slots:
+  attached_to:
+    range: string
+    required: true
+    description: internal_id of the Entity, or edge_id of the Edge, this facet describes.
+
+  _producer:
+    range: string
+    required: true
+    description: Identifies what produced this facet, e.g. a tool name and version, or a system name.
+
+  _schemaURL:
+    range: uriorcurie
+    required: true
+    description: >-
+      URL of the schema this facet instance validates against, so an unknown consumer can
+      validate an unknown third-party facet without prior knowledge of it.

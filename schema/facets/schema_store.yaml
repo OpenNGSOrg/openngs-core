@@ -1,0 +1,55 @@
+id: https://openngs.org/schema/openngs/facets/schema_store
+name: openngs_facet_schema_store
+title: OpenNGS Facet Schema Store
+description: >-
+  A registry of JSON Schema documents a FacetInstance's data can be validated against,
+  referenced by schema_id instead of requiring a stable local file path.
+  Immutable once written: registering again under the same schema_name adds a new
+  schema_id, it never overwrites an existing row - a FacetInstance's _schemaURL always
+  pins the exact schema_id it was validated against, never a "latest" pointer that could
+  drift out from under it.
+prefixes:
+  linkml: https://w3id.org/linkml/
+  openngs: https://openngs.org/schema/openngs/
+default_prefix: openngs
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+  FacetSchema:
+    description: >-
+      One registered, immutable version of a JSON Schema document. `json_schema` is
+      typically generated externally via `linkml generate json-schema` - the conversion
+      itself stays outside OpenNGS's runtime dependencies; this store only ever accepts
+      and serves already-generated JSON Schema text.
+    slots:
+      - schema_id
+      - schema_name
+      - json_schema
+
+slots:
+  schema_id:
+    identifier: true
+    range: string
+    required: true
+    description: Opaque, immutable UUIDv7, same shape as internal_id/edge_id/facet_id.
+    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+
+  schema_name:
+    range: string
+    required: true
+    description: >-
+      openngs://{org}/{namespace}/facet-schema/{local_id} - the same naming convention
+      every other named thing in OpenNGS uses. Not unique: multiple FacetSchema rows can
+      share a schema_name, one per registered version.
+    pattern: "^openngs://[^/]+/[^/]+/[^/]+/.+$"
+
+  json_schema:
+    range: string
+    required: true
+    description: >-
+      The registered JSON Schema document, as a JSON string - a plain TEXT column, not a
+      native json/jsonb type, for the same SQLite/Postgres portability reason as
+      FacetInstance.data.
