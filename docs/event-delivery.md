@@ -168,5 +168,5 @@ openngs event relay --sink webhook --url https://consumer.example/openngs \
 ```
 
 A broker sink (Kafka, NATS) is not built; it is tracked as
-[#23](https://github.com/OpenNGSOrg/OpenNGS/issues/23). The `Sink` protocol in
+[#23](https://github.com/OpenNGSOrg/openngs-core/issues/23). The `Sink` protocol in
 `src/openngs/sinks/` is the whole of what one has to satisfy.
