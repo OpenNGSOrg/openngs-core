@@ -1,10 +1,10 @@
 """FastAPI REST API - see docs/api-design.md. Mirrors the CLI's
 command surface over HTTP instead of the terminal - entity create/list/show, `link`,
-`facet`/`facet schema`, `datapoint`, and `event` are all done, the full Phase 3 backlog.
+`facet`/`facet schema`, `datapoint`, and `event`.
 Every write goes through the same `record_*` event-log path the CLI uses; this
 is a second client of the store layer, not a reimplementation of it.
 
-Also mounts the Phase 4 GraphQL schema (`graphql_schema.py`, docs/graphql-design.md) at
+Also mounts the GraphQL schema (`graphql_schema.py`, docs/graphql-design.md) at
 `/graphql` - one process, one deployment unit, same as the `Dockerfile` already treats "the
 API" as a single image.
 
@@ -96,12 +96,12 @@ from openngs.store.repo import NAME_RE
 
 app = FastAPI(
     title="OpenNGS",
-    description="Sample lineage in sequencing labs - REST API (Phase 3, docs/api-design.md).",
+    description="Sample lineage in sequencing labs - REST API (docs/api-design.md).",
 )
 
-# CloudEvents' `source` distinguishes producers without changing the event shape
-# anticipated this exact moment ("a future producer (the Phase 3 REST API...) can identify
-# itself differently"). The CLI's own DEFAULT_SOURCE ("openngs-cli") stays what it is.
+# CloudEvents' `source` distinguishes producers without changing the event shape, which is
+# what lets this API identify itself separately from the CLI. The CLI's own DEFAULT_SOURCE
+# ("openngs-cli") stays what it is.
 API_SOURCE = "openngs-api"
 
 # A hand-authored, query-only GraphQL schema mounted into
@@ -627,7 +627,7 @@ for _cfg in ENTITIES:
     _register_entity_routes(_cfg)
 
 
-# --- `link` routes (Phase 3 backlog item 2), mirroring `openngs link <predicate>` -------
+# --- `link` routes, mirroring `openngs link <predicate>` --------------------------------
 
 
 class LinkRequest(BaseModel):
@@ -749,7 +749,7 @@ def link_retract(edge_id: str, body: RetractEdgeRequest, db_ctx: DbCtx) -> dict[
     return {"edge_id": edge_id, "retracted_by_event": event_id}
 
 
-# --- `facet` routes, Phase 3 backlog item 3 -----------------------------------
+# --- `facet` routes -----------------------------------
 
 
 class FacetAttachRequest(BaseModel):
@@ -929,7 +929,7 @@ def facet_retract(facet_id: str, body: RetractEdgeRequest, db_ctx: DbCtx) -> dic
     return {"facet_id": facet_id, "retracted_by_event": event_id}
 
 
-# --- `facet schema` routes, Phase 3 backlog item 3 ----------------------------
+# --- `facet schema` routes ----------------------------
 
 
 class FacetSchemaRegisterRequest(BaseModel):
@@ -1020,7 +1020,7 @@ def facet_schema_show(ref: str, db_ctx: DbCtx, events: bool = Query(False)) -> d
     return result
 
 
-# --- `datapoint` routes, Phase 3 backlog item 4 --------------------------------
+# --- `datapoint` routes --------------------------------
 
 
 class DataPointCreateRequest(BaseModel):
@@ -1396,7 +1396,7 @@ def ingest_manifest(
     return {"applied": 0 if dry_run else len(results), "dry_run": dry_run, "results": results}
 
 
-# --- `event` routes, Phase 3 backlog item 5 ------------------------------------
+# --- `event` routes ------------------------------------
 
 
 @app.get("/events", tags=["event"], summary="List events", operation_id="list_events")

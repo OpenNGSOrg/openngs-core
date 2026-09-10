@@ -1,5 +1,5 @@
-"""End-to-end tests for the REST API's `event` routes (Phase 3 backlog item 5,
-docs/api-design.md). Mirrors the relevant scenarios in tests/test_cli_events.py."""
+"""End-to-end tests for the REST API's `event` routes (docs/api-design.md).
+Mirrors the relevant scenarios in tests/test_cli_events.py."""
 
 from __future__ import annotations
 

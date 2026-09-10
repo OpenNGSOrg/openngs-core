@@ -300,7 +300,7 @@ def test_apply_event_unknown_type_raises(db: Database) -> None:
 
 
 def test_replay_reproduces_projection(db: Database) -> None:
-    """The Phase 2 acceptance criterion: replaying the log from scratch reproduces the exact
+    """The acceptance criterion: replaying the log from scratch reproduces the exact
     same projection - same internal_ids, same edges, same facet/datapoint data."""
     subj_id, _ = record_entity_created(
         db, DEFAULT_SOURCE, "Subject", _name("subject", "SUBJ-001"), ["biosample:SAMN1"], NOW, NOW

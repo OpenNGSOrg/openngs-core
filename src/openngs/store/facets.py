@@ -1,5 +1,4 @@
-"""Generic facet-instance storage and validation, plus the facet schema store
-the schema store.
+"""Generic facet-instance storage and validation, plus the facet schema store.
 
 FacetInstance holds any facet whose type isn't a promoted core facet - which right now is
 every facet, since none are core. An instance validates against a JSON Schema

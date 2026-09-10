@@ -25,8 +25,8 @@ classes:
     is_a: Facet
     description: >-
       A facet instance of a type not (yet, or ever) promoted to core. `data` is validated
-      at write time against the JSON Schema `_schemaURL` points to - a local file for now
-      fetching a remote URL isn't supported yet.
+      at write time against the JSON Schema `_schemaURL` points to - a local file for
+      now; fetching a remote URL isn't supported yet.
     slots:
       - facet_id
       - facet_type

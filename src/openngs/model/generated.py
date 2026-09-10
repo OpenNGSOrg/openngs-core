@@ -130,7 +130,7 @@ class EventType(str, Enum):
     """
     facet_instance_corrected = "facet_instance_corrected"
     """
-    A facet instance's data was wrong and is replaced, keeping the same facet_id believed.
+    A facet instance's data was wrong and is replaced, keeping the same facet_id.
     """
     facet_instance_retracted = "facet_instance_retracted"
     """
@@ -229,7 +229,7 @@ class Event(ConfiguredBaseModel):
 
 class FacetInstance(Facet):
     """
-    A facet instance of a type not (yet, or ever) promoted to core. `data` is validated at write time against the JSON Schema `_schemaURL` points to - a local file for now fetching a remote URL isn't supported yet.
+    A facet instance of a type not (yet, or ever) promoted to core. `data` is validated at write time against the JSON Schema `_schemaURL` points to - a local file for now; fetching a remote URL isn't supported yet.
     """
     linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://openngs.org/schema/openngs/facets/generic'})
 
@@ -237,7 +237,7 @@ class FacetInstance(Facet):
     facet_type: str = Field(default=..., description="""The class name within the schema at _schemaURL this instance conforms to - a schema file can define more than one class.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance']} })
     data: str = Field(default=..., description="""This instance's fields, serialized as a JSON string. A plain string column, not a native json/jsonb type, so the same DDL is portable between SQLite and Postgres.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     attached_to: str = Field(default=..., description="""internal_id of the Entity, or edge_id of the Edge, this facet describes.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Facet']} })
     producer: str = Field(default=..., alias="_producer", description="""Identifies what produced this facet, e.g. a tool name and version, or a system name.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Facet']} })
@@ -304,7 +304,7 @@ class Entity(ConfiguredBaseModel):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -344,7 +344,7 @@ class Subject(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -384,7 +384,7 @@ class Specimen(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -424,7 +424,7 @@ class Extract(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -464,7 +464,7 @@ class Library(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -504,7 +504,7 @@ class Pool(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -544,7 +544,7 @@ class SequencingRun(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -584,7 +584,7 @@ class DataFile(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -624,7 +624,7 @@ class AnalysisRun(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -664,7 +664,7 @@ class DataFileSet(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -704,7 +704,7 @@ class Protocol(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -744,7 +744,7 @@ class Reagent(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -784,7 +784,7 @@ class Actor(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -824,7 +824,7 @@ class Project(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -864,7 +864,7 @@ class Context(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -909,7 +909,7 @@ class DataPoint(Entity):
     name: str = Field(default=..., description="""Namespaced name: openngs://{org}/{namespace}/{entity_type}/{local_id}.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     xrefs: Optional[list[str]] = Field(default=None, description="""CURIEs identifying this entity in external systems, e.g. biosample:SAMN12345678. Many-to-many, additive, never authoritative.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Entity']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('internal_id')
@@ -950,7 +950,7 @@ class Edge(ConfiguredBaseModel):
     predicate: EdgePredicate = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Edge']} })
     object: str = Field(default=..., description="""internal_id of the Entity this edge points to.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Edge']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('edge_id')
@@ -983,7 +983,7 @@ class SameAsEdge(Edge):
     predicate: Literal["same_as"] = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Edge'], 'equals_string': 'same_as'} })
     object: str = Field(default=..., description="""internal_id of the Entity this edge points to.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Edge']} })
     valid_time: datetime  = Field(default=..., description="""When the fact was true in the lab (invariant 2). Caller-supplied; defaults to now.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Event', 'FacetInstance', 'Entity', 'Edge']} })
-    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
+    retracted_at: Optional[datetime ] = Field(default=None, description="""Transaction time at which this row stopped being believed - set by a retraction event. NULL while the row is believed, which is what every read filters on. A transaction time, not a valid time: a retraction is a change of belief, not a change of what was true in the lab.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
     retracted_by_event: Optional[str] = Field(default=None, description="""event_id of the retraction event that set retracted_at.""", json_schema_extra = { "linkml_meta": {'domain_of': ['FacetInstance', 'Entity', 'Edge']} })
 
     @field_validator('edge_id')

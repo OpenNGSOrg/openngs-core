@@ -309,8 +309,8 @@ def find_by_name(
 def lookup_entity(
     db: Database, internal_id: str, include_retracted: bool = False
 ) -> tuple[str, str] | None:
-    """Probe every entity table for internal_id (Edge.edge_subject/object carry no type column,
-    carry no foreign key). Returns (entity_type, name) or None."""
+    """Probe every entity table for internal_id (Edge.edge_subject/object carry neither a
+    type column nor a foreign key). Returns (entity_type, name) or None."""
     filt = believed(include_retracted)
     for entity_type in ENTITY_TYPES:
         sql = f'SELECT name FROM "{entity_type}" WHERE internal_id = {db.ph(1)}{filt}'
@@ -689,7 +689,8 @@ def get_edges(
 ) -> tuple[list[EdgeRow], list[EdgeRow]]:
     """Returns (outgoing, incoming), each the first edge_limit edges in creation order
     across both "Edge" (the five non-identity predicates) and "SameAsEdge" (its own table,
-    carry no foreign key). Both tables are queried with the same ORDER BY/LIMIT and then merged, so
+    carrying no foreign key). Both tables are queried with the same ORDER BY/LIMIT and then
+    merged, so
     a small limit truncates the oldest-first sequence as a whole - it never drops one
     table's rows wholesale just because the other filled the limit on its own."""
     outgoing = [
